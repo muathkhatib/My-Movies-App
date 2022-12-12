@@ -1,5 +1,5 @@
 import React, {useMemo} from 'react';
-import {View, Text, Dimensions} from 'react-native';
+import {View, Text} from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -11,8 +11,6 @@ import {ScrollView} from 'react-native-gesture-handler';
 import style from './style';
 
 export default function MovieDetailsScreen({route, navigation}) {
-  const height = useMemo(() => Dimensions.get('screen').height, []);
-  const width = useMemo(() => Dimensions.get('screen').width, []);
   const movieDetails = useMemo(() => route.params, [route.params]);
   return (
     <>

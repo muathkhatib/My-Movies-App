@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {View} from 'react-native';
 import SearchBox from '../../components/SearchBox';
 
@@ -12,9 +12,12 @@ export default function SearchScreen(props) {
   const data = useAsyncStorage('Movies');
 
   const [moviesList, setMoviesList] = useState([]);
+  const searchKey = useMemo(
+    () => props.route.params?.value?.toLowerCase(),
+    [props.route.params?.value],
+  );
 
-  useEffect(() => {
-    const searchKey = props.route.params?.value?.toLowerCase();
+  const filterHandler = useCallback(() => {
     const filterMovies = data.filter(
       m =>
         m.name?.toLowerCase().includes(searchKey) ||
@@ -22,13 +25,17 @@ export default function SearchScreen(props) {
         m.genre?.toLowerCase().includes(searchKey),
     );
     setMoviesList(filterMovies);
-  }, [data, props.route.params?.value]);
+  }, [data, searchKey]);
+
+  useEffect(() => {
+    filterHandler();
+  }, [filterHandler]);
 
   return (
     <View style={style.container}>
       <SearchBox value={props.route.params?.value} />
       {moviesList.length > 0 ? (
-        <ListHandler list={moviesList} />
+        <ListHandler list={moviesList} onRefreshCallback={filterHandler} />
       ) : (
         <ErrorHandler
           imageSrc={noResult}
